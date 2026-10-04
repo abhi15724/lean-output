@@ -1,0 +1,11 @@
+{
+  "description": "lean-output: inject the ruleset at session start and a one-line reminder per prompt; handle mode switches.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/lean-activate.js\"", "timeout": 5 } ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/lean-prompt.js\"", "timeout": 5 } ] }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "lean-output",
+  "owner": { "name": "Abhi" },
+  "plugins": [
+    {
+      "name": "lean-output",
+      "source": "./",
+      "description": "Highest quality in the fewest tokens. Lean ladder, modes, hooks, review/audit/compress commands."
+    }
+  ]
+}

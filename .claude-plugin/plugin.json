@@ -1,0 +1,10 @@
+{
+  "name": "lean-output",
+  "version": "1.1.0",
+  "description": "The editor for your AI agent: highest quality in the fewest tokens. Decision ladder, lite/standard/ultra modes, session hooks, review/audit/compress commands.",
+  "author": { "name": "Abhi" },
+  "license": "MIT",
+  "homepage": "https://github.com/abhi15724/lean-output",
+  "repository": "https://github.com/abhi15724/lean-output",
+  "keywords": ["tokens", "efficiency", "concise", "prompt-compression", "usage", "claude-code-plugin"]
+}
