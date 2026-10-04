@@ -69,3 +69,4 @@ node scripts/sync-rules.js && node tests/run.js
 ```
 
 MIT.
+"# lean-output" 
