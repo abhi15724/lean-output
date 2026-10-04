@@ -4,7 +4,7 @@
 
 The editor for your AI agent. Highest quality in the fewest tokens, on both sides: what the agent **writes** and what it **reads**.
 
-Inspired by [ponytail](https://github.com/DietrichGebert/ponytail): ponytail shrinks what the agent builds, lean-output shrinks what it says and loads. They compose.
+
 
 ## How it works
 
