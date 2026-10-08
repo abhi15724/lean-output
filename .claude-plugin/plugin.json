@@ -2,5 +2,7 @@
   "name": "lean-output",
   "version": "2.0.0",
   "description": "A disciplined output-efficiency toolkit for Claude Code: concise responses, lower context waste, fast software delivery, audits, compression, review, and resumable builds without sacrificing correctness.",
-  "author": { "name": "Abhi" }
+  "author": {
+    "name": "Abhi"
+  }
 }

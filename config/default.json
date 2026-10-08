@@ -1,0 +1,10 @@
+{
+  "defaultMode": "standard",
+  "language": "auto",
+  "maxClarifyingQuestions": 1,
+  "showUsageEstimates": false,
+  "fastBuild": {
+    "writeHandoff": true,
+    "runSmokeCheck": true
+  }
+}
