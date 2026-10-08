@@ -1,8 +1,8 @@
 ---
-description: Set lean-output mode (lite, standard, ultra, off). No argument switches it on at the default level.
-argument-hint: [lite|standard|ultra|off]
+description: Set lean-output mode (lite, standard, ultra, fast-build, off)
+argument-hint: [lite|standard|ultra|fast-build|off]
 ---
 
-Mode request: $ARGUMENTS
+The UserPromptSubmit hook persists the requested mode. Apply `lean-output` using that mode. If the mode is `fast-build`, also apply `lean-fast-build` to build requests.
 
-The UserPromptSubmit hook has already stored the mode. Apply the lean-output skill at that mode from now on. Reply with one short line confirming the mode. Nothing else.
+Reply with one short confirmation. If the argument is invalid, use the configured default mode.

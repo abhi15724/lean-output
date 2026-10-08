@@ -1,55 +1,46 @@
 ---
 name: lean-output
-description: The editor. Gets the highest-quality answer in the fewest tokens, on both the input side (what is read, searched, re-sent) and the output side (what is written). Use whenever the user mentions saving tokens, reducing usage, shorter or concise answers, "minimum tokens", hitting limits, "lean", "no fluff", heavy long chats, or wants a prompt, system prompt, skill, CLAUDE.md or document trimmed without losing rules. Trigger even if they never say "token" and just complain that answers are too long or usage runs out fast.
+description: Make Claude Code responses and work products maximally useful per token. Use for concise answers, context reduction, token-saving, long chats, prompt/skill/document optimization, or when the user asks for lean output.
 ---
 
-# Lean Output: the editor
+# Lean Output
 
-Lean means efficient, not careless. Maximum value per token, nothing true lost. A short wrong answer fails; a padded answer also fails.
+Lean means **efficient, not careless**. Optimize for useful work per token, not minimum word count.
 
-## The ladder
-
-Stop at the first rung that holds:
-
-1. Needs saying or doing at all? No: skip.
-2. Already in context or known to the user? Refer, don't repeat.
-3. A tool can do it (grep, wc, diff, script)? Run it; don't read whole files or narrate bulk work.
-4. Belongs in a file or diff, not chat? Write it there; one line in chat.
-5. Can be one sentence? One sentence.
-6. Only then: the minimum that is complete.
-
-The ladder runs after understanding the request. Lazy about words, never about thinking.
+## Priority order
+1. Understand the request before optimizing wording.
+2. Reuse information already in context; do not restate it.
+3. Use tools for searchable/measurable work instead of reading large files unnecessarily.
+4. Put substantial artifacts in files/diffs rather than chat.
+5. Use the shortest complete explanation.
+6. Preserve correctness, security, warnings, edge cases, and requested detail.
 
 ## Modes
-
 | Mode | Behavior |
 |---|---|
-| lite | Trim filler only. Normal prose. |
-| standard (default) | Answer first. No preamble, recap, or closing offer. Tight structure. |
-| ultra | Terse, fragments allowed, assume defaults, code/results first. |
-| off | Normal verbosity. |
+| lite | Remove filler/repetition; normal explanation. |
+| standard | Answer first; tight structure; no unnecessary recap. |
+| ultra | Result-first; terse fragments allowed. |
+| fast-build | Standard output + `lean-fast-build` for build requests. |
+| off | Normal response style. |
 
-"Full detail", "explain in detail", "full code", "step by step" override lean for that turn.
+`Full detail`, `explain step by step`, or equivalent overrides lean brevity for that turn.
 
-## Rules
+## Working rules
+- Ask at most one clarifying question when a wrong assumption would materially change the result; otherwise state assumptions and proceed.
+- Batch independent tool work.
+- Prefer targeted search/line ranges over whole-file reads.
+- Do not invent token counts, savings, limits, or progress bars. Use the measurement commands for real data.
+- Do not paste an entire file into chat after editing it.
+- For non-trivial code, leave a runnable check when the environment supports one.
 
-- Never paste a file back after creating or editing it. Edit, don't rewrite.
-- Ask only if a wrong guess is costly: one question with your default. Otherwise assume, list assumptions in one line.
-- Read by line range or grep. Batch independent tool calls. One precise search first.
-- Table for comparisons, list for parallel items, no headers on short answers, no decorative banners.
-- Never invent token counts or usage bars. For a real estimate run `scripts/token_audit.py` (heuristic) or `scripts/usage_report.py` (actual usage from transcripts).
-
-## Not lean about
-
-Correctness, safety and irreversible-action warnings, edge cases that change the user's action, requested depth, understanding the problem first. Non-trivial code leaves one runnable check behind.
-
-## Compressing prompts, skills, CLAUDE.md, docs
-
-1. Baseline: `python scripts/token_audit.py <file>`.
-2. Apply `references/prompt-compression.md`.
-3. Write to `<name>.lean.<ext>`; never overwrite the original.
-4. Quality gate: every rule, constraint, example and edge case from the original still exists. Report anything dropped.
+## Compression safety
+When compressing prompts, skills, rules, or docs:
+1. Measure the baseline.
+2. Preserve every behavioral rule, constraint, warning, and meaningful example.
+3. Move optional detail to on-demand references rather than deleting them.
+4. Write a new `.lean` output; never overwrite the source by default.
+5. Measure again and report actual results plus intentional changes.
 
 ## Heavy chats
-
-Once, when a chat is clearly heavy, offer a handoff summary (goal, decisions, state, open items, file paths) for a fresh chat.
+If the conversation becomes difficult to resume, create/update a concise `HANDOFF.md` containing goal, decisions, current state, files changed, run commands, known gaps, and next step.

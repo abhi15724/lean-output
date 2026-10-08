@@ -1,33 +1,11 @@
-# Prompt / Document Compression
+# Prompt compression rules
 
-## High-yield cuts (in order)
-1. **Duplicates**: same rule stated twice in different words. Keep the clearer one.
-2. **Preamble and role fluff**: "You are a world-class expert...". Keep a one-line role only if it changes behavior.
-3. **Hedging and filler**: "please make sure to", "it is important that", "in order to" -> "to".
-4. **Explaining the obvious**: instructions a capable model already follows by default.
-5. **Long examples**: keep one tight example per behavior; shorten the rest to pattern + one line.
-6. **Verbose formatting**: heavy banners, repeated headers, decorative symbols.
-7. **Negative piles**: replace five "don't" lines with one positive instruction describing the target.
-
-## Rewrite patterns
-| Before | After |
-|---|---|
-| In order to | To |
-| It is important that you always | Always |
-| Due to the fact that | Because |
-| You should make sure to include | Include |
-| At this point in time | Now |
-| Provide a detailed explanation of | Explain |
-
-## Structure wins
-- Table instead of repeated "If X then Y" sentences.
-- Reference files for rarely-needed detail (load on demand) instead of inlining everything.
-- Keep always-loaded text (descriptions, system prompts) tiny; move detail into on-demand files.
-
-## Don't compress
-- Exact strings, schemas, field names, regexes, commands.
-- Numbers, thresholds, constraints.
-- The one example that defines a tricky format.
-
-## Verify
-After compressing, diff the rule lists: nothing lost, nothing changed in meaning. Test on 2-3 real prompts if possible.
+1. Remove greetings, throat-clearing, repeated conclusions, and decorative prose.
+2. Merge duplicate rules; keep the strongest precise version.
+3. Replace repeated wording with a defined term or compact table.
+4. Preserve every requirement, prohibition, exception, edge case, and output constraint.
+5. Keep examples only when they disambiguate behavior; otherwise remove or consolidate them.
+6. Move rarely needed background into an on-demand reference instead of deleting it.
+7. Prefer imperative, testable language: `Do X`, `Never Y`, `If Z, then W`.
+8. Avoid vague optimization claims such as "save as many tokens as possible" without a measurable criterion.
+9. After compression, compare headings/rules and re-run the token audit.
