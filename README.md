@@ -1,72 +1,101 @@
 # lean-output
 
-*He reads the draft, says nothing, and hands it back half as long. Nothing true was lost.*
+**A disciplined efficiency toolkit for Claude Code.**
 
-The editor for your AI agent. Highest quality in the fewest tokens, on both sides: what the agent **writes** and what it **reads**.
+Lean Output reduces unnecessary context and verbosity while protecting correctness, security, accessibility, and required detail. It also includes a fast-build workflow for shipping maintainable software in fewer turns.
 
+## What it does
 
+- **Lean modes:** `lite`, `standard`, `ultra`, `fast-build`, `off`
+- **Fast builds:** vertical-slice delivery, smoke checks, and resumable handoffs
+- **Context audit:** identify expensive always-loaded instructions
+- **Compression:** reduce prompts/skills/docs without silently dropping rules
+- **Review:** find removable verbosity
+- **Usage report:** inspect locally stored transcript volume
+- **Persistent mode:** lightweight `UserPromptSubmit` hook
+- **Configurable defaults:** environment variable or JSON config
 
-## How it works
+## Commands
 
-Before writing or reading, the agent stops at the first rung that holds:
-
-```
-1. Needs saying or doing at all?  -> no: skip it
-2. Already in context?            -> refer, don't repeat
-3. A tool can do it?              -> run it, don't read/narrate
-4. Belongs in a file or diff?     -> file; one line in chat
-5. One sentence?                  -> one sentence
-6. Only then: the minimum that is complete
-```
-
-Lean, not negligent. Never cut: correctness, safety warnings, edge cases that change what you do, requested depth, understanding the problem.
-
-## Install (Claude Code)
-
-```
-/plugin marketplace add abhi15724/lean-output
-```
-```
-/plugin install lean-output@lean-output
-```
-(Send as two separate prompts.) Needs `node` on PATH for the two hooks; without it the skill still works.
-
-Local test: `claude --plugin-dir ./lean-output` and `claude plugin validate ./lean-output`.
-
-## Modes and commands
-
-| Command | What it does |
+| Command | Purpose |
 |---|---|
-| `/lean [lite\|standard\|ultra\|off]` | Set mode; no argument turns it on at the default level |
-| `/lean-review [file]` | Delete-list of token waste in a reply, draft or file |
-| `/lean-audit` | Token cost of always-loaded context (CLAUDE.md, rules, descriptions) |
-| `/lean-compress <file>` | Trim a prompt/skill/doc to `*.lean.*`, with a loss check |
-| `/lean-gain` | Real usage from your Claude Code transcripts |
-| `/lean-help` | Quick reference |
+| `/lean` | Enable configured default mode |
+| `/lean standard` | Concise, complete responses |
+| `/lean ultra` | Very terse output |
+| `/lean fast-build` | Fast software delivery workflow |
+| `/lean off` | Disable the plugin's brevity guidance |
+| `/lean-fast-build <idea>` | Build using the fast-build protocol |
+| `/lean-audit` | Audit always-loaded context |
+| `/lean-compress <file>` | Compress a file safely |
+| `/lean-review [file]` | Review for verbosity |
+| `/lean-gain [--last N]` | Show measured local usage |
+| `/lean-help` | Command reference |
 
-Default mode: `LEAN_DEFAULT_MODE` env var or `defaultMode` in `~/.config/lean-output/config.json` (`%APPDATA%\lean-output\config.json` on Windows). Default is `standard`. Say "full detail" to override for one turn.
+## Configuration
 
-## Cost of the plugin itself
+The default mode is resolved in this order:
 
-Full ruleset once per session (about 400 tokens), then a one-line reminder per prompt (about 30 tokens). The audit script is a heuristic estimate, not a tokenizer.
+1. `LEAN_DEFAULT_MODE` environment variable
+2. `~/.config/lean-output/config.json` → `defaultMode`
+3. `standard`
 
-## Honest numbers
+Example:
 
-None published. See [benchmarks/](benchmarks/) for an A/B method with a quality gate. `/lean-gain` reads actual `usage` fields from your transcripts.
+```json
+{
+  "defaultMode": "standard",
+  "language": "auto",
+  "maxClarifyingQuestions": 1,
+  "showUsageEstimates": false,
+  "fastBuild": {
+    "writeHandoff": true,
+    "runSmokeCheck": true
+  }
+}
+```
 
-## Other agents
+## Design principles
 
-`AGENTS.md`, `.cursor/rules/`, `.windsurf/rules/`, `.clinerules/`, `.github/copilot-instructions.md` carry the ruleset (instruction-only, no modes/hooks). Generated from `rules/core.md`: `node scripts/sync-rules.js` (`--check` in CI).
+### Efficient, not careless
+Token reduction never justifies dropping a security warning, constraint, edge case, validation step, or user-requested depth.
 
-## Uninstall
+### Measure instead of guessing
+`token_audit.py` gives a heuristic estimate. It is explicitly **not** a tokenizer-exact count. `usage_report.py` reports locally discoverable transcript volume and also uses a heuristic conversion.
 
-Run `node scripts/uninstall.js` first (removes the mode flag and config), then `/plugin remove lean-output`.
+### Speed without rework
+Fast-build starts with the smallest runnable vertical slice, batches independent changes, verifies the result, and records a handoff when work may continue later.
+
+## Project layout
+
+```text
+.claude-plugin/plugin.json  Plugin metadata
+commands/                    User-facing slash commands
+config/                      Safe editable defaults
+hooks/                       Persistent mode handling
+skills/                      Lean workflows
+  lean-output/               Core rules, references, measurement scripts
+  lean-fast-build/           Fast software delivery
+  lean-audit/                Context audit
+  lean-compress/             Safe compression
+  lean-review/               Verbosity review
+  lean-gain/                 Usage reporting
+tests/                      Local regression checks
+```
 
 ## Development
 
-```
-node scripts/sync-rules.js && node tests/run.js
+Run the regression tests from the plugin root:
+
+```bash
+python3 -m unittest discover -s tests -v
 ```
 
-MIT.
-"# lean-output" 
+Run a token audit:
+
+```bash
+python3 skills/lean-output/scripts/token_audit.py README.md
+```
+
+## Philosophy
+
+**Less noise. More useful work. No shortcuts on quality.**
